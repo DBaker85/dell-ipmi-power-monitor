@@ -24,3 +24,4 @@ router.get("root", "/", (context) => {
 
 app.use(router.routes()).use(router.allowedMethods());
 app.listen(5878);
+console.log("app running on port 5878");
