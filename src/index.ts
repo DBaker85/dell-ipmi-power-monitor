@@ -1,21 +1,21 @@
 import koa from "koa";
 import KoaRouter from "koa-router";
-import { exec } from "child_process";
+import { exec as ChildExec } from "child_process";
+import util from "util";
 
-const ipmiCommand = `ipmitool -I lanplus -H 192.168.2.36 -U root -P pass delloem powermonitor powerconsumptionhistory | grep "Average Power Consumption" | awk '{print $4}'`;
+import { IpmiIp, IpmiUser, IpmiPassword } from "../secrets.json";
 
-const read = async () => {
-  const power = await exec(ipmiCommand);
-  console.log(power);
-};
+const exec = util.promisify(ChildExec);
 
-// read()
+const ipmiCommand = `ipmitool -I lanplus -H ${IpmiIp} -U ${IpmiUser} -P ${IpmiPassword} delloem powermonitor powerconsumptionhistory | grep "Average Power Consumption" | awk '{print $4}'`;
 
 const app = new koa();
 const router = new KoaRouter();
 
-router.get("server-power", "/api/server-power", (context) => {
-  context.body = { power: 500, unit: "kWh" };
+router.get("server-power", "/api/server-power", async (context) => {
+  const response = await exec(ipmiCommand);
+  const power = +response.stdout / 1000;
+  context.body = { power, unit: "kWh" };
 });
 
 router.get("root", "/", (context) => {

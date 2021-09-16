@@ -18,11 +18,6 @@ import { writeJSON } from "fs-extra";
       name: "IpmiPassword",
       message: "Enter your Ipmi password",
     },
-    {
-      type: "text",
-      name: "glancesIp",
-      message: `Enter the ip adress of your glances web instance`,
-    },
   ];
   const response = await prompts(questions);
   await writeJSON("secrets.json", response);
