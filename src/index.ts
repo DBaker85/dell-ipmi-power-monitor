@@ -14,8 +14,8 @@ const router = new KoaRouter();
 
 router.get("server-power", "/api/server-power", async (context) => {
   const response = await exec(ipmiCommand);
-  const power = +response.stdout / 1000;
-  context.body = { power, unit: "kWh" };
+  const power = +response.stdout;
+  context.body = { power, unit: "W" };
 });
 
 router.get("root", "/", (context) => {
